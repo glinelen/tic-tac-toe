@@ -85,15 +85,15 @@ function Square(props) {
       const history = this.state.history;
       const current = history[this.state.stepNumber];
       const winner = calculateWinner(current.squares);
-      const boardRowLength = 3;
+      const boardWidth = 3;
      
       const moves = history.map((step, move) => {
-        const col = step.stepLocation % boardRowLength;
-        const row = Math.trunc(step.stepLocation / boardRowLength);
+        const col = step.stepLocation % boardWidth;
+        const row = Math.trunc(step.stepLocation / boardWidth);
         const desc = move ? 'Go to move #' + move + '( ' + col + ' , ' + row + ')'  : 'Go to game start';
         return (
-          <li key={move}>
-            <button onClick={() => this.jumpTo(move)}>{desc}</button>
+          <li key={move} className={move === this.state.stepNumber ? 'selected-move' : ''}>
+            <button className={move === this.state.stepNumber ? 'selected-move' : ''} onClick={() => this.jumpTo(move)}>{desc}</button>
           </li>
         );
       });
