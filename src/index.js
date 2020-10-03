@@ -30,7 +30,7 @@ class Board extends React.Component {
       for (let col = 0; col < limit; col++) {
         row.push(this.renderSquare(rowIdx * limit + col));
       }
-      squares.push(<div className="board-row" key={row}>{row}</div>)
+      squares.push(<div className="board-row" key={rowIdx}>{row}</div>)
     }
     return (
       <div>
@@ -80,7 +80,7 @@ class Game extends React.Component {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
-    const boardWidth = 3;
+    const boardWidth = 4;
 
     const moves = history.map((step, move) => {
       const col = step.stepLocation % boardWidth;
