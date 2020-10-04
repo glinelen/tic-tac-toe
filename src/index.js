@@ -43,8 +43,10 @@ class Board extends React.Component {
 class Game extends React.Component {
   constructor(props) {
     super(props);
+    let boardWidth = 4;
     this.state = {
-      history: [{ squares: Array(9).fill(null) }],
+      boardWidth: boardWidth,
+      history: [{ squares: Array(boardWidth * boardWidth).fill(null) }],
       xIsNext: true,
       stepLocation: null,
       stepNumber: 0
@@ -114,23 +116,51 @@ class Game extends React.Component {
 }
 
 function calculateWinner(squares) {
-  const lines = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-  ];
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+  // const lines = [
+  //   [0, 1, 2],
+  //   [3, 4, 5],
+  //   [6, 7, 8],
+  //   [0, 3, 6],
+  //   [1, 4, 7],
+  //   [2, 5, 8],
+  //   [0, 4, 8],
+  //   [2, 4, 6],
+  // ];
+  // for (let i = 0; i < lines.length; i++) {
+  //   const [a, b, c] = lines[i];
+  //   if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+  //     return squares[a];
+  //   }
+  // }
+  // return null;
+  let rows = [];
+  let boardWidth = 4;
+  let row = [];
+  //build the rows
+  for (let i = 0; i < squares.length; i++) {
+   
+    row.push(squares[i]);
+    if (row.length === boardWidth) {
+      rows.push(row);
+      row = [];
     }
   }
-  return null;
+
+  //check if one of the rows is a winning row
+  for(let r = 0; r < rows.length; r++){
+    let currentRow = rows[r];
+    let v = currentRow[0];
+    let haveWinner = true;
+    for(let j =0; j < currentRow.length; j++){
+      if(!currentRow[j] || currentRow[j] !== v) {
+        haveWinner = false;
+      }
+    }
+    if(haveWinner) {
+      return v;
+    }
+  }
+  
 }
 
 // ========================================
