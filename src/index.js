@@ -15,22 +15,21 @@ class Board extends React.Component {
 
 
 
-  renderSquare(i) {
+  renderSquare(r, c) {
     return <Square
-      key={i}
-      value={this.props.squares[i]}
-      onClick={() => this.props.onClick(i)} />;
+      key={[r, c]}
+      value={this.props.squares[r][c]}
+      onClick={() => this.props.onClick(r, c)} />;
   }
 
   render() {
-    let limit = this.props.boardWidth;
     let squares = [];
-    for (let rowIdx = 0; rowIdx < limit; rowIdx++) {
+    for (let r = 0; r < this.props.boardWidth; r++) {
       let row = [];
-      for (let col = 0; col < limit; col++) {
-        row.push(this.renderSquare(rowIdx * limit + col));
+      for (let c = 0; c < this.props.boardWidth; c++) {
+        row.push(this.renderSquare(r, c));
       }
-      squares.push(<div className="board-row" key={rowIdx}>{row}</div>)
+      squares.push(<div className="board-row" key={r}>{row}</div>)
     }
     return (
       <div>
@@ -43,28 +42,39 @@ class Board extends React.Component {
 class Game extends React.Component {
   constructor(props) {
     super(props);
-    let boardWidth = 4;
+    let boardWidth = 3;
     this.state = {
       boardWidth: boardWidth,
-      history: [{ squares: Array(boardWidth * boardWidth).fill(null) }],
+      history: [{
+        squares: this.initSquares(boardWidth),
+        stepLocation: null
+      }],
       xIsNext: true,
-      stepLocation: null,
       stepNumber: 0
     }
   }
 
-  handleClick(i) {
+  initSquares(boardWidth) {
+    let squares = [];
+    for (let index = 0; index < boardWidth; index++) {
+      const row = new Array(boardWidth).fill(null);
+      squares.push(row);
+    }
+    return squares;
+  }
+
+  handleClick(r, c) {
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
-    if (calculateWinner(squares) || squares[i]) {
+    if (calculateWinner(squares) || squares[r][c]) {
       return;
     }
-    squares[i] = this.state.xIsNext ? 'X' : 'O';
+    squares[r][c] = this.state.xIsNext ? 'X' : 'O';
     this.setState({
       history: history.concat([{
         squares: squares,
-        stepLocation: i,
+        stepLocation: [r, c],
       }]),
       stepNumber: history.length,
       xIsNext: !this.state.xIsNext
@@ -82,11 +92,12 @@ class Game extends React.Component {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
-    const boardWidth = 4;
+    const boardWidth = 3;
 
     const moves = history.map((step, move) => {
-      const col = step.stepLocation % boardWidth;
-      const row = Math.trunc(step.stepLocation / boardWidth);
+      if (!step.stepLocation) return null;
+      const col = step.stepLocation[1];
+      const row = step.stepLocation[0];
       const desc = move ? 'Go to move #' + move + '( ' + col + ' , ' + row + ')' : 'Go to game start';
       return (
         <li key={move} className={move === this.state.stepNumber ? 'selected-move' : ''}>
@@ -104,7 +115,7 @@ class Game extends React.Component {
         <div className="game-board">
           <Board squares={current.squares}
             boardWidth={boardWidth}
-            onClick={(i) => this.handleClick(i)} />
+            onClick={(r, c) => this.handleClick(r, c)} />
         </div>
         <div className="game-info">
           <div >{status}</div>
@@ -116,51 +127,58 @@ class Game extends React.Component {
 }
 
 function calculateWinner(squares) {
-  // const lines = [
-  //   [0, 1, 2],
-  //   [3, 4, 5],
-  //   [6, 7, 8],
-  //   [0, 3, 6],
-  //   [1, 4, 7],
-  //   [2, 5, 8],
-  //   [0, 4, 8],
-  //   [2, 4, 6],
-  // ];
-  // for (let i = 0; i < lines.length; i++) {
-  //   const [a, b, c] = lines[i];
-  //   if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-  //     return squares[a];
-  //   }
-  // }
-  // return null;
-  let rows = [];
-  let boardWidth = 4;
-  let row = [];
-  //build the rows
-  for (let i = 0; i < squares.length; i++) {
-   
-    row.push(squares[i]);
-    if (row.length === boardWidth) {
-      rows.push(row);
-      row = [];
+
+  let boardWidth = 3;
+  let diagonal1 = [];
+  let diagonal2 = [];
+
+  let winnerRow = null;
+  //check if one of the rows is a winning row
+  for (let r = 0; r < boardWidth; r++) {
+    let currentRow = squares[r];
+    winnerRow = currentRow;
+    for (let c = 0; c < currentRow.length; c++) {
+      //build diagonals
+      if(r === c) {
+        diagonal1.push(currentRow[c]);
+      }
+      if(r + c === boardWidth -1) {
+        diagonal2.push(currentRow[c]);
+      }
+      //checking rows
+      if (!currentRow[c] || currentRow[c] !== currentRow[0]) {
+        winnerRow = null;       
+      }
+    }
+    if (winnerRow) {
+      return currentRow[0];
     }
   }
 
-  //check if one of the rows is a winning row
-  for(let r = 0; r < rows.length; r++){
-    let currentRow = rows[r];
-    let v = currentRow[0];
-    let haveWinner = true;
-    for(let j =0; j < currentRow.length; j++){
-      if(!currentRow[j] || currentRow[j] !== v) {
-        haveWinner = false;
+  if(diagonal1.every(x => x && x === diagonal1[0])) {
+    return diagonal1[0];
+  }
+  if(diagonal2.every(x => x && x === diagonal2[0])) {
+    return diagonal2[0];
+  }
+
+  //checking columns
+  let winnerColumn = null;
+  for (let c = 0; c < boardWidth; c++) {
+    winnerColumn = squares[0][c];
+    for (let r = 0; r < boardWidth; r++) {
+      const cell = squares[r][c];
+      if (!cell || cell !== squares[0][c]) {
+        winnerColumn = null;
+        break;
       }
     }
-    if(haveWinner) {
-      return v;
+    if (winnerColumn) {
+      return winnerColumn;
     }
   }
-  
+
+
 }
 
 // ========================================
