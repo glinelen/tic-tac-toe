@@ -105,7 +105,7 @@ class Game extends React.Component {
     });
     let status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
     if (winner) {
-      status = 'Winner: ' + winner;
+      status = (winner.winnerType === "draw") ? "All right, we'll call this a draw" : 'Winner: ' + winner.winner;
     }
 
     return (
@@ -124,48 +124,52 @@ class Game extends React.Component {
   }
 }
 
+
 function calculateWinner(squares) {
 
   let boardWidth = 3;
   let diagonal1 = [];
   let diagonal2 = [];
   let result = null;
+  let isBoardFull = true;
 
-  
+
   //check if one of the rows is a winning row
   for (let r = 0; r < boardWidth; r++) {
     let currentRow = squares[r];
     result = {
       winnerType: 'row',
-      index : r,
+      index: r,
       winner: currentRow[0]
     };
-        
+
     for (let c = 0; c < currentRow.length; c++) {
       //build diagonals
-      if(r === c) {
+      if (r === c) {
         diagonal1.push(currentRow[c]);
       }
-      if(r + c === boardWidth -1) {
+      if (r + c === boardWidth - 1) {
         diagonal2.push(currentRow[c]);
       }
       //checking rows
       if (!currentRow[c] || currentRow[c] !== currentRow[0]) {
-        result = null;       
+        result = null;
       }
     }
     if (result) {
       return result;
     }
+    isBoardFull = isBoardFull && currentRow.every(x => x !== null);
   }
 
-  if(diagonal1.every(x => x && x === diagonal1[0])) {
+  //check diagonals
+  if (diagonal1.every(x => x && x === diagonal1[0])) {
     return {
       winnerType: "diagonal1",
       winner: diagonal1[0]
     }
   }
-  if(diagonal2.every(x => x && x === diagonal2[0])) {
+  if (diagonal2.every(x => x && x === diagonal2[0])) {
     return {
       winnerType: "diagonal2",
       winner: diagonal2[0]
@@ -173,20 +177,33 @@ function calculateWinner(squares) {
   }
 
   //checking columns
-  let winnerColumn = null;
+  result = null;
   for (let c = 0; c < boardWidth; c++) {
-    winnerColumn = squares[0][c];
+    result = {
+      winnerType: "column",
+      index: c,
+      winner: squares[0][c]
+    }
+
     for (let r = 0; r < boardWidth; r++) {
       const cell = squares[r][c];
       if (!cell || cell !== squares[0][c]) {
-        winnerColumn = null;
+        result = null;
         break;
       }
     }
-    if (winnerColumn) {
-      return winnerColumn;
+    if (result) {
+      return result;
     }
   }
+
+  //no winner - check for draw
+  if (isBoardFull) {
+    return {
+      winnerType: "draw"
+    }
+  }
+  return result;
 }
 
 // ========================================
