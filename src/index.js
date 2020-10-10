@@ -13,8 +13,6 @@ function Square(props) {
 
 class Board extends React.Component {
 
-
-
   renderSquare(r, c) {
     return <Square
       key={[r, c]}
@@ -131,12 +129,18 @@ function calculateWinner(squares) {
   let boardWidth = 3;
   let diagonal1 = [];
   let diagonal2 = [];
+  let result = null;
 
-  let winnerRow = null;
+  
   //check if one of the rows is a winning row
   for (let r = 0; r < boardWidth; r++) {
     let currentRow = squares[r];
-    winnerRow = currentRow;
+    result = {
+      winnerType: 'row',
+      index : r,
+      winner: currentRow[0]
+    };
+        
     for (let c = 0; c < currentRow.length; c++) {
       //build diagonals
       if(r === c) {
@@ -147,19 +151,25 @@ function calculateWinner(squares) {
       }
       //checking rows
       if (!currentRow[c] || currentRow[c] !== currentRow[0]) {
-        winnerRow = null;       
+        result = null;       
       }
     }
-    if (winnerRow) {
-      return currentRow[0];
+    if (result) {
+      return result;
     }
   }
 
   if(diagonal1.every(x => x && x === diagonal1[0])) {
-    return diagonal1[0];
+    return {
+      winnerType: "diagonal1",
+      winner: diagonal1[0]
+    }
   }
   if(diagonal2.every(x => x && x === diagonal2[0])) {
-    return diagonal2[0];
+    return {
+      winnerType: "diagonal2",
+      winner: diagonal2[0]
+    }
   }
 
   //checking columns
@@ -177,8 +187,6 @@ function calculateWinner(squares) {
       return winnerColumn;
     }
   }
-
-
 }
 
 // ========================================
