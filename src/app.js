@@ -1,33 +1,37 @@
 import React from 'react';
 import Game from './game';
-import {BrowserRouter as  Router, Switch, Route, Link } from 'react-router-dom';
+import GameSettings from './gameSettings';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
 class App extends React.Component {
-    render() {
-       return (
+   render() {
+      return (
          <Router >
-         <div>
-                <nav>
+            <div>
+               <nav>
                   <ul>
-                    <li>
-                      <Link to="/">Home</Link>
-                    </li>           
-                    <li>
-                      <Link to="/game">Game</Link>
-                    </li>
+                     <li>
+                        <Link to="/">Home</Link>
+                     </li>
+                     <li>
+                        <Link to="/game">Новая Игра</Link>
+                     </li>
                   </ul>
-                </nav>
-            
-            <Switch>              
-              <Route path="/game" >
-                <Game />
-              </Route>
-              <Route path="/">                
-              </Route>
-            </Switch>
+               </nav>
+
+               <Switch>
+                  <Route path="/games/:game">
+                     <Game />
+                  </Route>
+                  <Route path="/game" >
+                     <GameSettings />
+                  </Route>
+                  <Route path="/">
+                  </Route>
+               </Switch>
             </div>
-          </Router>
-       )
-    }
- }
- export default App;
+         </Router>
+      )
+   }
+}
+export default App;
