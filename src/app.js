@@ -20,11 +20,12 @@ class App extends React.Component {
                </nav>
 
                <Switch>
+                  
+                  <Route exact path="/game" >
+                     <GameSettings />
+                  </Route>
                   <Route path="/games/:game">
                      <Game />
-                  </Route>
-                  <Route path="/game" >
-                     <GameSettings />
                   </Route>
                   <Route path="/">
                   </Route>

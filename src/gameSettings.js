@@ -10,6 +10,10 @@ class GameSettings extends React.Component {
         };
     }
 
+    playerShapeChanged(event) {
+        this.setState(event.target.value);
+    }
+
     render() {
         return (
             <div className="gameSettings" >
@@ -27,7 +31,7 @@ class GameSettings extends React.Component {
                     <label>
                         Игрок 1:
                     </label>
-                    <select value={this.state.player1Shape}>
+                    <select value={this.state.player1Shape} onChange={this.playerShapeChanged}>
                         <option value="X">X</option>
                         <option value="O">O</option>
                     </select>
@@ -36,7 +40,7 @@ class GameSettings extends React.Component {
                     <label>
                         Игрок 2:
                     </label>
-                    <select value={this.state.player2Shape}>
+                    <select value={this.state.player2Shape} onChange={this.playerShapeChanged}>
                         <option value="X">X</option>
                         <option value="O">O</option>
                     </select>
