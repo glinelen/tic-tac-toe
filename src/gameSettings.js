@@ -6,22 +6,39 @@ class GameSettings extends React.Component {
         this.state = {
             boardSize: 3,
             player1Shape: "X",
-            player2Shape: "O"
+            shapes :[{ key: "x", value: "X" }, { key: "o", value: "O" }]
         };
+        this.player1ShapeChanged = this.player1ShapeChanged.bind(this);
+        this.player2ShapeChanged = this.player2ShapeChanged.bind(this);
+        this.handleBoardSizeChange  = this.handleBoardSizeChange.bind(this);
+        this.handleStartGame = this.handleStartGame.bind(this);
     }
 
-    playerShapeChanged(event) {
-        this.setState(event.target.value);
+    player1ShapeChanged(event) {
+        this.setState({player1Shape : event.target.value});
+    }
+    player2ShapeChanged(event) {
+        this.setState({player2Shape : event.target.value});
+    }
+
+    handleBoardSizeChange(event) {
+        this.setState({boardSize: event.target.value});
+    }
+    handleStartGame(event) {
+
     }
 
     render() {
+        let shapesList = this.state.shapes.length > 0 && this.state.shapes.map((pair) => {
+            return (<option key={pair.key} value={pair.value}>{pair.value}</option>);
+        }, this);
         return (
-            <div className="gameSettings" >
+            <form className="gameSettings" onSubmit={this.handleStartGame} >
                 <div >
                     <label>
                         Играть на доске
                     </label>
-                    <select value={this.state.boardSize}>
+                    <select value={this.state.boardSize} onChange={this.handleBoardSizeChange}>
                         <option value="3">3 x 3</option>
                         <option value="4">4 x 4</option>
                         <option value="5">5 x 5</option>
@@ -31,23 +48,21 @@ class GameSettings extends React.Component {
                     <label>
                         Игрок 1:
                     </label>
-                    <select value={this.state.player1Shape} onChange={this.playerShapeChanged}>
-                        <option value="X">X</option>
-                        <option value="O">O</option>
+                    <select value={this.state.player1Shape} onChange={this.player1ShapeChanged}>
+                       {shapesList}
                     </select>
                 </div>
                 <div>
                     <label>
                         Игрок 2:
                     </label>
-                    <select value={this.state.player2Shape} onChange={this.playerShapeChanged}>
-                        <option value="X">X</option>
-                        <option value="O">O</option>
+                    <select value={this.state.player2Shape} onChange={this.player2ShapeChanged}>
+                        {shapesList}
                     </select>
                 </div>
 
                 <input type="submit" value="Старт!"></input>
-            </div>
+            </form>
         )
     }
 }
