@@ -27,7 +27,7 @@ class App extends React.Component {
                   <Route path="/games/:game">
                      <Game />
                   </Route>
-                  <Route path="/">
+                  <Route exact path="/">
                   </Route>
                </Switch>
             </div>

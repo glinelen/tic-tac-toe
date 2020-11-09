@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
 
 class GameSettings extends React.Component {
     constructor(props) {
@@ -33,7 +34,7 @@ class GameSettings extends React.Component {
             return (<option key={pair.key} value={pair.value}>{pair.value}</option>);
         }, this);
         return (
-            <form className="gameSettings" onSubmit={this.handleStartGame} >
+            <div className="gameSettings" onSubmit={this.handleStartGame} >
                 <div >
                     <label>
                         Играть на доске
@@ -61,8 +62,8 @@ class GameSettings extends React.Component {
                     </select>
                 </div>
 
-                <input type="submit" value="Старт!"></input>
-            </form>
+                <Link className="gameStartButton" to="/games/1">Старт!</Link>
+            </div>
         )
     }
 }
