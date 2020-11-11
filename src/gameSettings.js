@@ -62,7 +62,7 @@ class GameSettings extends React.Component {
                     </select>
                 </div>
 
-                <Link className="gameStartButton" to="/games/1">Старт!</Link>
+                <Link className="gameStartButton"  to={{pathname: "/games/1", settings:{boardSize: this.state.boardSize}}}>Старт!</Link>
             </div>
         )
     }

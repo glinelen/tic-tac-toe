@@ -24,8 +24,8 @@ class App extends React.Component {
                   <Route exact path="/game" >
                      <GameSettings />
                   </Route>
-                  <Route path="/games/:game">
-                     <Game />
+                  <Route path="/games/:game" component={Game}>
+                     
                   </Route>
                   <Route exact path="/">
                   </Route>
