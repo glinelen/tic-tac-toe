@@ -39,13 +39,16 @@ function Square(props) {
     constructor(props) {
       super(props);
       let boardSize = this.props.location.settings.boardSize;
+      
       this.state = {
         boardWidth: boardSize,
+        pShape1: this.props.location.settings.player1Shape,
+        pShape2: this.props.location.settings.player2Shape,
         history: [{
           squares: this.initSquares(boardSize),
           stepLocation: null
         }],
-        xIsNext: true,
+        p1IsNext: true,
         stepNumber: 0
       }
 
@@ -68,14 +71,14 @@ function Square(props) {
       if (this.calculateWinner(squares) || squares[r][c]) {
         return;
       }
-      squares[r][c] = this.state.xIsNext ? 'X' : 'O';
+      squares[r][c] = this.state.p1IsNext ? this.state.pShape1 : this.state.pShape2;
       this.setState({
         history: history.concat([{
           squares: squares,
           stepLocation: [r, c],
         }]),
         stepNumber: history.length,
-        xIsNext: !this.state.xIsNext
+        p1IsNext: !this.state.p1IsNext
       });
     }
   
@@ -184,7 +187,7 @@ function Square(props) {
           </li>
         );
       });
-      let status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+      let status = 'Next player: ' + (this.state.p1IsNext ? this.state.pShape1 : this.state.pShape2);
       if (winner) {
         status = (winner.winnerType === "draw") ? "All right, we'll call this a draw" : 'Winner: ' + winner.winner;
       }

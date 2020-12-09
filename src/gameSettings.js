@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 class GameSettings extends React.Component {
     constructor(props) {
@@ -7,34 +7,35 @@ class GameSettings extends React.Component {
         this.state = {
             boardSize: 3,
             player1Shape: "X",
-            shapes :[{ key: "x", value: "X" }, { key: "o", value: "O" }]
+            player2Shape: "O",
+            shapes: [{ key: "x", value: "X" }, { key: "o", value: "O" }]
         };
         this.player1ShapeChanged = this.player1ShapeChanged.bind(this);
         this.player2ShapeChanged = this.player2ShapeChanged.bind(this);
-        this.handleBoardSizeChange  = this.handleBoardSizeChange.bind(this);
-        this.handleStartGame = this.handleStartGame.bind(this);
+        this.handleBoardSizeChange = this.handleBoardSizeChange.bind(this);
+       // this.handleStartGame = this.handleStartGame.bind(this);
     }
 
     player1ShapeChanged(event) {
-        this.setState({player1Shape : event.target.value});
+        this.setState({ player1Shape: event.target.value });
     }
     player2ShapeChanged(event) {
-        this.setState({player2Shape : event.target.value});
+        this.setState({ player2Shape: event.target.value });
     }
 
     handleBoardSizeChange(event) {
-        this.setState({boardSize: event.target.value});
+        this.setState({ boardSize: event.target.value });
     }
-    handleStartGame(event) {
+    // handleStartGame(event) {
 
-    }
+    // }
 
     render() {
         let shapesList = this.state.shapes.length > 0 && this.state.shapes.map((pair) => {
             return (<option key={pair.key} value={pair.value}>{pair.value}</option>);
         }, this);
         return (
-            <div className="gameSettings" onSubmit={this.handleStartGame} >
+            <div className="gameSettings" /*onSubmit={this.handleStartGame}*/ >
                 <div >
                     <label>
                         Играть на доске
@@ -50,7 +51,7 @@ class GameSettings extends React.Component {
                         Игрок 1:
                     </label>
                     <select value={this.state.player1Shape} onChange={this.player1ShapeChanged}>
-                       {shapesList}
+                        {shapesList}
                     </select>
                 </div>
                 <div>
@@ -62,7 +63,13 @@ class GameSettings extends React.Component {
                     </select>
                 </div>
 
-                <Link className="gameStartButton"  to={{pathname: "/games/1", settings:{boardSize: this.state.boardSize}}}>Старт!</Link>
+                <Link className="gameStartButton" to={{
+                    pathname: "/games/1", settings: {
+                        boardSize: this.state.boardSize,
+                        player1Shape: this.state.player1Shape,
+                        player2Shape: this.state.player2Shape
+                    }
+                }}>Старт!</Link>
             </div>
         )
     }
